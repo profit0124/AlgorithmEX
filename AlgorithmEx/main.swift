@@ -13,7 +13,7 @@ let firstInput = readLine()!.components(separatedBy: " ")
 let secondInput = readLine()!.components(separatedBy: " ")
 let total = Int(firstInput.first!)!
 let distance = Double(firstInput.last!)!
-let array = secondInput.map { Double($0)! }
+let array = Set(secondInput.map { Double($0)! }).sorted()
 
 var result = total
 

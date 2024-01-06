@@ -4,65 +4,52 @@
 //
 //  Created by Sooik Kim on 1/2/24.
 //
-
+//빵집
 import Foundation
 
+var inputSize = readLine()!.components(separatedBy: " ").map{ Int($0)! }
+let col = inputSize.removeLast()
+let row = inputSize.removeLast()
 
-// MARK: 수리공 항승
-//let firstInput = readLine()!.components(separatedBy: " ")
-//let secondInput = readLine()!.components(separatedBy: " ")
-//let total = Int(firstInput.first!)!
-//let distance = Double(firstInput.last!)!
-//let array = Set(secondInput.map { Double($0)! }).sorted()
-//
-//var result = total
-//
-//check(array: array, count: 0, distance: distance, minVal: 0, maxVal: 0)
-//print(result)
+var array:[[String]] = []
+var result = 0
 
+for _ in 0..<row {
+    let path = readLine()!.map{ String($0) }
+    array.append(path)
+}
 
-// MARK: 안테나
+var maxRow = 0
+for i in 0..<row {
+    let beforeArray = array
+    var isSuccess = true
+    var pathRow = i
+    for j in 0..<col {
+        if pathRow - 1 > 0 && array[pathRow - 1][j] == "." {
+            array[pathRow - 1][j] = "x"
+            pathRow -= 1
+        } else if array[pathRow][j] == "." {
+            array[pathRow][j] = "x"
+        } else if pathRow + 1 < row && array[pathRow + 1][j] == "." {
+            array[pathRow + 1][j] = "x"
+            pathRow += 1
+            maxRow = max(pathRow, maxRow)
+        } else {
+            isSuccess = false
+            maxRow = max(pathRow, maxRow)
+            break
+        }
+    }
+    
+    if isSuccess {
+        result += 1
+    } else {
+        array = beforeArray
+    }
+    if maxRow == row - 1 {
+        break
+    }
+}
 
-//let total = Int(readLine()!)
-//let array = readLine()!.components(separatedBy: " ").map { Int( $0 )! }.sorted()
-//
-//var position = 0
-//var distance: Int?
-//
-//
-//
-//for i in array {
-//    if position != i {
-//        var sum = 0
-//        for j in array {
-//            var distance = j - i
-//            if distance < 0 {
-//                distance *= -1
-//            }
-//            sum += distance
-//        }
-//        if distance != nil {
-//            if distance! > sum {
-//                position = i
-//                distance = sum
-//            }
-//        } else {
-//            distance = sum
-//            position = i
-//        }
-//    }
-//}
-//
-//print(position)
+print(result)
 
-// 잃어버린 괄호
-//
-//var array = readLine()!.components(separatedBy: "-")
-//
-////let firstItem = array.removeFirst().components(separatedBy: "+").map{ Int($0)! }.reduce(0){ $0 + $1 }
-//var result = array.removeFirst().components(separatedBy: "+").map{ Int($0)! }.reduce(0){ $0 + $1 }
-//for item in array {
-//    result -= item.components(separatedBy: "+").map{ Int($0)! }.reduce(0){ $0 + $1 }
-//}
-//
-//print(result)

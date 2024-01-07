@@ -4,52 +4,126 @@
 //
 //  Created by Sooik Kim on 1/2/24.
 //
-//빵집
+// 단어수학 - 실패2
 import Foundation
 
-var inputSize = readLine()!.components(separatedBy: " ").map{ Int($0)! }
-let col = inputSize.removeLast()
-let row = inputSize.removeLast()
-
-var array:[[String]] = []
+var inputSize = Int(readLine()!)!
+var testDatas: [String] = []
+var maxSize: Int = 0
+for _ in 0..<inputSize {
+    let input = readLine()!
+    maxSize = max(maxSize, input.count)
+    testDatas.append(input)
+}
 var result = 0
 
-for _ in 0..<row {
-    let path = readLine()!.map{ String($0) }
-    array.append(path)
-}
-
-var maxRow = 0
-for i in 0..<row {
-    let beforeArray = array
-    var isSuccess = true
-    var pathRow = i
-    for j in 0..<col {
-        if pathRow - 1 > 0 && array[pathRow - 1][j] == "." {
-            array[pathRow - 1][j] = "x"
-            pathRow -= 1
-        } else if array[pathRow][j] == "." {
-            array[pathRow][j] = "x"
-        } else if pathRow + 1 < row && array[pathRow + 1][j] == "." {
-            array[pathRow + 1][j] = "x"
-            pathRow += 1
-            maxRow = max(pathRow, maxRow)
-        } else {
-            isSuccess = false
-            maxRow = max(pathRow, maxRow)
-            break
-        }
-    }
-    
-    if isSuccess {
-        result += 1
+var testArray:[[Character]] = []
+for item in testDatas {
+    let gap = maxSize - item.count
+    if gap == 0 {
+        testArray.append(item.map{ $0 })
     } else {
-        array = beforeArray
-    }
-    if maxRow == row - 1 {
-        break
+        var prefix: String = ""
+        for _ in 0..<gap {
+            prefix += "0"
+        }
+        testArray.append((prefix + item).map{ $0 })
     }
 }
 
-print(result)
+var dict: [Int: [Character]] = [:]
 
+var dictCount = 0
+
+func recursion(completeArray:[Int], count:Int) {
+    if maxSize >= count {
+        var completeArray = completeArray
+        let powValue = maxSize - count
+        let dictKey = 9 - dictCount
+        let tenPow = Int(pow(10.0, Double(powValue)))
+        var tempDict: [Int:[Character]] = [:]
+        var tempResult = 0
+        for i in 0..<testArray.count {
+            let value = testArray[i].removeFirst()
+            var isAppended = false
+            if value != "0" {
+                for j in completeArray {
+                    if dict[j]?.contains(value) ?? false {
+                        if tempDict[j] == nil {
+                            tempDict[j] = []
+                        }
+                        tempDict[j]?.append(value)
+                        isAppended = true
+                        break
+                    }
+                }
+                if !isAppended {
+                    if !completeArray.contains(dictKey) {
+                        completeArray.append(dictKey)
+                    }
+            
+                    if tempDict[dictKey] == nil {
+                        tempDict[dictKey] = []
+                    }
+                    if !(tempDict[dictKey]?.contains(value) ?? true) {
+                        dictCount += 1
+                    }
+                    tempDict[dictKey]?.append(value)
+                }
+            }
+        }
+        
+        var testDict:[Int: [Character]] = [:]
+        for (key, value) in tempDict {
+            var countDict: [Character: Int] = [:]
+            for char in value {
+                if countDict[char] == nil {
+                    countDict[char] = 1
+                } else {
+                    countDict[char]! += 1
+                }
+            }
+            
+            let sortedCountdDict = countDict.sorted{ $0.1 > $1.1 }
+            var tempGap = 0
+            var tempCount = 0
+            var addCount = 0
+            for (newKye, newValue) in sortedCountdDict {
+                if tempCount == 0 {
+                    tempCount = newValue
+                    testDict[key - tempGap] = [newKye]
+                } else if tempCount == newValue {
+                    testDict[key - tempGap]?.append(newKye)
+                    addCount += 1
+                } else {
+                    tempCount = newValue
+                    tempGap += 1 + addCount
+                    addCount = 0
+                    testDict[key - tempGap] = [newKye]
+                }
+                if key - tempGap - addCount > 0 {
+                    tempResult += (key - tempGap - addCount) * tempCount
+                }
+            }
+        }
+        
+        
+        for (key, value) in testDict {
+            if let tempArray = dict[key] {
+                let temp = tempArray.filter { !value.contains($0) }
+                let newKey = key - temp.count
+                if newKey != 0 {
+                    completeArray.append(newKey)
+                    dict[newKey] = temp
+                    dict[key] = value
+                }
+            } else {
+                dict[key] = value
+            }
+        }
+        result += tempResult * tenPow
+        recursion(completeArray: completeArray, count: count + 1)
+    }
+}
+recursion(completeArray: [], count: 1)
+print(result)

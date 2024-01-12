@@ -1,9 +1,9 @@
-//
-//  단어수학-실패2.swift
-//  AlgorithmEx
-//
-//  Created by Sooik Kim on 1/7/24.
-//
+////
+////  단어수학-실패2.swift
+////  AlgorithmEx
+////
+////  Created by Sooik Kim on 1/7/24.
+////
 //import Foundation
 //
 //var inputSize = Int(readLine()!)!
@@ -34,7 +34,7 @@
 //
 //var dictCount = 0
 //
-//func recursion(completeArray:[Int], count:Int) {
+//func recursion(count:Int) {
 //    if maxSize >= count {
 //        let powValue = maxSize - count
 //        let dictKey = 9 - dictCount
@@ -104,8 +104,11 @@
 //        }
 //        result += tempResult * tenPow
 //        dictCount = dict.reduce(0) { $0 + $1.value.count }
-//        recursion(completeArray: completeArray, count: count + 1)
+//        recursion(count: count + 1)
 //    }
 //}
-//recursion(completeArray: [], count: 1)
+//recursion(count: 1)
+//for (key, value) in dict {
+//    print("\(key) : \(value)")
+//}
 //print(result)

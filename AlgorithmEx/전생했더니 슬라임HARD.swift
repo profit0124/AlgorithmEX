@@ -1,10 +1,3 @@
-//
-//  전생했더니 슬라임HARD.swift
-//  AlgorithmEx
-//
-//  Created by Sooik Kim on 1/12/24.
-//
-//
 //import Foundation
 //
 //var inputSize = Int(readLine()!)!

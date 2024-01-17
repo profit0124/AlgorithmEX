@@ -3,88 +3,56 @@
 //  AlgorithmEx
 //
 //  Created by Sooik Kim on 1/2/24.
-// 철도 공사
+// 재귀함수가 무엇인가요?
+
 import Foundation
 
-struct LinkedList {
-    var previous: String
-    var next: String
-    
-    init(previous: String, next: String) {
-        self.previous = previous
-        self.next = next
-    }
-}
+let counts = Int(readLine()!)!
 
-let input = readLine()!.components(separatedBy: " ").map{ Int($0)! }
+print("어느 한 컴퓨터공학과 학생이 유명한 교수님을 찾아가 물었다.")
 
-let inputDatas = readLine()!.components(separatedBy: " ")
+let question = """
+"재귀함수가 뭔가요?"
+"""
+let answer1 = """
+"잘 들어보게. 옛날옛날 한 산 꼭대기에 이세상 모든 지식을 통달한 선인이 있었어.
+"""
+let answer2 = """
+마을 사람들은 모두 그 선인에게 수많은 질문을 했고, 모두 지혜롭게 대답해 주었지.
+"""
 
-var dict:[String: LinkedList] = [:]
+let answer3 = """
+그의 답은 대부분 옳았다고 하네. 그런데 어느 날, 그 선인에게 한 선비가 찾아와서 물었어."
+"""
 
-for i in 0..<input[0] {
-    var previousIndex = 0
-    var nextIndex = 0
-    let count = input[0] - 1
-    if i == 0 {
-        previousIndex = count
-        nextIndex = i + 1
-    } else if i == count {
-        previousIndex = i - 1
-        nextIndex = 0
+let answer4 = """
+"재귀함수는 자기 자신을 호출하는 함수라네"
+"""
+
+let answer = """
+라고 답변하였지.
+"""
+
+var count = 0
+recursion(&count, prefix: "")
+
+func recursion(_ count: inout Int, prefix:String) {
+    var prefix = prefix
+    print(prefix + question)
+    if count == counts {
+        print(prefix + answer4)
     } else {
-        previousIndex = i - 1
-        nextIndex = i + 1
+        print(prefix + answer1)
+        print(prefix + answer2)
+        print(prefix + answer3)
     }
     
-    dict[inputDatas[i]] = LinkedList(previous: inputDatas[previousIndex], next: inputDatas[nextIndex])
-}
-
-var testCases:[[String]] = []
-
-for i in 0..<input[1] {
-    let testCase = readLine()!.components(separatedBy: " ")
-    testCases.append(testCase)
-}
-
-for testCase in testCases {
-    switch testCase[0] {
-    case "BN":
-        let base = testCase[1]
-        let push = testCase[2]
-        var temp = dict[base]!
-        let originalNext = temp.next
-        temp.next = push
-        dict[base] = temp
-        print(originalNext)
-        dict[push] = .init(previous: base, next: originalNext)
-        dict[originalNext]!.previous = push
-        
-    case "BP":
-        let base = testCase[1]
-        let push = testCase[2]
-        var temp = dict[base]!
-        let originalPrevious = temp.previous
-        temp.previous = push
-        print(originalPrevious)
-        dict[base] = temp
-        dict[push] = .init(previous: originalPrevious, next: base)
-        dict[originalPrevious]!.next = push
-        
-    case "CN":
-        let base = testCase[1]
-        var temp = dict[base]!
-        print(temp.next)
-        let nextValue = temp.next
-        dict[base]!.next = dict[nextValue]!.next
-        dict[nextValue]!.previous = base
-        
-    default:
-        let base = testCase[1]
-        var temp = dict[base]!
-        print(temp.previous)
-        let previousValue = temp.previous
-        dict[base]!.previous = dict[previousValue]!.previous
-        dict[previousValue]!.next = base
+    count += 1
+    let originalPrefix = prefix
+    prefix += "____"
+    
+    if count <= counts {
+        recursion(&count, prefix: prefix)
     }
+    print(originalPrefix + answer)
 }
